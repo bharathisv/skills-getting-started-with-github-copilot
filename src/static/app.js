@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const activitiesList = document.getElementById("activities-list");
+  const activitiesContainer = document.getElementById("activities-container");
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
@@ -11,35 +11,79 @@ document.addEventListener("DOMContentLoaded", () => {
       const activities = await response.json();
 
       // Clear loading message
-      activitiesList.innerHTML = "";
+      activitiesContainer.innerHTML = "";
 
       // Populate activities list
-      Object.entries(activities).forEach(([name, details]) => {
-        const activityCard = document.createElement("div");
-        activityCard.className = "activity-card";
+      Object.entries(activities).forEach(([activityName, activityData]) => {
+        const participantsList = activityData.participants
+          .map((p) => `<li>${p}</li>`)
+          .join("");
 
-        const spotsLeft = details.max_participants - details.participants.length;
+        const participantsHTML =
+          activityData.participants.length > 0
+            ? participantsList
+            : '<li class="no-participants">No participants yet</li>';
 
-        activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-        `;
+        const card = document.createElement("div");
+        card.className = "activity-card";
+        card.innerHTML = `
+                <h3>${activityName}</h3>
+                <p class="description">${activityData.description}</p>
+                <p class="schedule"><strong>Schedule:</strong> ${activityData.schedule}</p>
+                <p class="capacity"><strong>Capacity:</strong> ${activityData.participants.length}/${activityData.max_participants}</p>
+                
+                <div class="participants-section">
+                    <h4>Participants (${activityData.participants.length})</h4>
+                    <ul class="participants-list">
+                        ${participantsHTML}
+                    </ul>
+                </div>
+                
+                <button class="signup-btn" onclick="signupForActivity('${activityName}')">Sign Up</button>
+            `;
 
-        activitiesList.appendChild(activityCard);
+        activitiesContainer.appendChild(card);
 
         // Add option to select dropdown
         const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
+        option.value = activityName;
+        option.textContent = activityName;
         activitySelect.appendChild(option);
       });
     } catch (error) {
-      activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
+      activitiesContainer.innerHTML =
+        "<p class='error'>Failed to load activities</p>";
       console.error("Error fetching activities:", error);
     }
   }
+
+  // Sign up for an activity
+  window.signupForActivity = async (activityName) => {
+    const email = prompt("Enter your email:");
+    if (!email) return;
+
+    try {
+      const response = await fetch(
+        `/activities/${encodeURIComponent(activityName)}/signup?email=${encodeURIComponent(
+          email
+        )}`,
+        {
+          method: "POST",
+        }
+      );
+
+      if (response.ok) {
+        alert("Successfully signed up!");
+        fetchActivities();
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.detail}`);
+      }
+    } catch (error) {
+      console.error("Error signing up:", error);
+      alert("Failed to sign up. Please try again.");
+    }
+  };
 
   // Handle form submission
   signupForm.addEventListener("submit", async (event) => {
@@ -50,7 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const response = await fetch(
-        `/activities/${encodeURIComponent(activity)}/signup?email=${encodeURIComponent(email)}`,
+        `/activities/${encodeURIComponent(activity)}/signup?email=${encodeURIComponent(
+          email
+        )}`,
         {
           method: "POST",
         }
