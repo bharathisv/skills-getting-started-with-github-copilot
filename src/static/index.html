@@ -46,5 +46,65 @@
     </footer>
 
     <script src="app.js"></script>
+
+    <script>
+      // Sample JavaScript to render activities - this will be in app.js normally
+      const activities = {
+        'Drama Club': {
+          description: 'Join us for an exciting year of drama and performance.',
+          schedule: 'Mondays and Wednesdays, 3:00 PM - 5:00 PM',
+          participants: ['Alice', 'Bob'],
+          max_participants: 20
+        },
+        'Science Club': {
+          description: 'Explore the wonders of science with hands-on experiments.',
+          schedule: 'Tuesdays, 3:00 PM - 4:30 PM',
+          participants: ['Charlie'],
+          max_participants: 15
+        }
+      };
+
+      function renderActivities() {
+        const activitiesList = document.getElementById('activities-list');
+        activitiesList.innerHTML = '';
+
+        for (const [activity, details] of Object.entries(activities)) {
+          const activityCard = document.createElement('div');
+          activityCard.className = 'activity-card';
+          activityCard.innerHTML = `
+            <h3>${activity}</h3>
+            <p>${details.description}</p>
+            <p><strong>Schedule:</strong> ${details.schedule}</p>
+            <p><strong>Participants:</strong> ${details.participants.length}/${details.max_participants}</p>
+            <div class="participants-section">
+              <h4>Signed Up:</h4>
+              <ul class="participants-list">
+                ${details.participants.map(p => `<li>${p}</li>`).join('')}
+              </ul>
+            </div>
+            <button onclick="signupForActivity('${activity}')">Sign Up</button>
+          `;
+          activitiesList.appendChild(activityCard);
+        }
+      }
+
+      function signupForActivity(activity) {
+        const email = document.getElementById('email').value;
+        if (!email) {
+          alert('Please enter your email to sign up.');
+          return;
+        }
+
+        if (!activities[activity]) return;
+
+        activities[activity].participants.push(email);
+        renderActivities();
+        document.getElementById('message').innerText = `Successfully signed up for ${activity}!`;
+        document.getElementById('message').classList.remove('hidden');
+      }
+
+      // Initial render
+      renderActivities();
+    </script>
   </body>
 </html>
