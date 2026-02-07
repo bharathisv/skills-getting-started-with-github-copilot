@@ -11,75 +11,10 @@
       <h1>Mergington High School Extracurricular Activities</h1>
       <p class="subtitle">Sign up for activities that interest you!</p>
       <div id="activities-container" class="activities-grid">
-        <!-- Activities will be loaded here -->
         <p>Loading activities...</p>
       </div>
     </div>
 
     <script src="/static/app.js"></script>
-
-    <script>
-      // Sample JavaScript to render activities - this will be in app.js normally
-      const activities = {
-        'Drama Club': {
-          description: 'Join us for an exciting year of drama and performance.',
-          schedule: 'Mondays and Wednesdays, 3:00 PM - 5:00 PM',
-          participants: ['Alice', 'Bob'],
-          max_participants: 20
-        },
-        'Science Club': {
-          description: 'Explore the wonders of science with hands-on experiments.',
-          schedule: 'Tuesdays, 3:00 PM - 4:30 PM',
-          participants: ['Charlie'],
-          max_participants: 15
-        }
-      };
-
-      function renderActivities() {
-        const activitiesContainer = document.getElementById('activities-container');
-        activitiesContainer.innerHTML = '';
-
-        for (const [activity, details] of Object.entries(activities)) {
-          const activityCard = document.createElement('div');
-          activityCard.className = 'activity-card';
-          activityCard.innerHTML = `
-            <h3 id="activity-${activity}">${activity}</h3>
-            <p class="description">${details.description}</p>
-            <p class="schedule"><strong>Schedule:</strong> ${details.schedule}</p>
-            <p class="capacity"><strong>Capacity:</strong> ${details.participants.length}/${details.max_participants}</p>
-            
-            <div class="participants-section">
-              <h4>Participants (${details.participants.length})</h4>
-              <ul class="participants-list">
-                ${details.participants.length > 0 
-                  ? details.participants.map(p => `<li>${p}</li>`).join('') 
-                  : '<li class="no-participants">No participants yet</li>'}
-              </ul>
-            </div>
-            
-            <button class="signup-btn" onclick="signupForActivity('${activity}')">Sign Up</button>
-          `;
-          activitiesContainer.appendChild(activityCard);
-        }
-      }
-
-      function signupForActivity(activity) {
-        const email = document.getElementById('email').value;
-        if (!email) {
-          alert('Please enter your email to sign up.');
-          return;
-        }
-
-        if (!activities[activity]) return;
-
-        activities[activity].participants.push(email);
-        renderActivities();
-        document.getElementById('message').innerText = `Successfully signed up for ${activity}!`;
-        document.getElementById('message').classList.remove('hidden');
-      }
-
-      // Initial render
-      renderActivities();
-    </script>
   </body>
 </html>
