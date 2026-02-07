@@ -3,49 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mergington High School Activities</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>Mergington High School - Activities</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <header>
-      <h1>Mergington High School</h1>
-      <h2>Extracurricular Activities</h2>
-    </header>
+    <div class="container">
+      <h1>Mergington High School Extracurricular Activities</h1>
+      <p class="subtitle">Sign up for activities that interest you!</p>
+      <div id="activities-container" class="activities-grid">
+        <!-- Activities will be loaded here -->
+        <p>Loading activities...</p>
+      </div>
+    </div>
 
-    <main>
-      <section id="activities-container">
-        <h3>Available Activities</h3>
-        <div id="activities-list">
-          <!-- Activities will be loaded here -->
-          <p>Loading activities...</p>
-        </div>
-      </section>
-
-      <section id="signup-container">
-        <h3>Sign Up for an Activity</h3>
-        <form id="signup-form">
-          <div class="form-group">
-            <label for="email">Student Email:</label>
-            <input type="email" id="email" required placeholder="your-email@mergington.edu" />
-          </div>
-          <div class="form-group">
-            <label for="activity">Select Activity:</label>
-            <select id="activity" required>
-              <option value="">-- Select an activity --</option>
-              <!-- Activity options will be loaded here -->
-            </select>
-          </div>
-          <button type="submit">Sign Up</button>
-        </form>
-        <div id="message" class="hidden"></div>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2023 Mergington High School</p>
-    </footer>
-
-    <script src="app.js"></script>
+    <script src="/static/app.js"></script>
 
     <script>
       // Sample JavaScript to render activities - this will be in app.js normally
@@ -65,8 +36,8 @@
       };
 
       function renderActivities() {
-        const activitiesList = document.getElementById('activities-list');
-        activitiesList.innerHTML = '';
+        const activitiesContainer = document.getElementById('activities-container');
+        activitiesContainer.innerHTML = '';
 
         for (const [activity, details] of Object.entries(activities)) {
           const activityCard = document.createElement('div');
@@ -88,7 +59,7 @@
             
             <button class="signup-btn" onclick="signupForActivity('${activity}')">Sign Up</button>
           `;
-          activitiesList.appendChild(activityCard);
+          activitiesContainer.appendChild(activityCard);
         }
       }
 
